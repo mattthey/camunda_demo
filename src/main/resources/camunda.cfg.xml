@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- Configure the ProcessEngineConfiguration -->
+	<bean id="processEngineConfiguration" class="org.camunda.bpm.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+		<!-- Configure the database connection -->
+		<property name="jdbcUrl" value="jdbc:h2:mem:studio;DB_CLOSE_DELAY=-1"/>
+		<property name="jdbcDriver" value="org.h2.Driver"/>
+		<property name="jdbcUsername" value="user"/>
+		<property name="jdbcPassword" value="password"/>
+		<!-- Configure the database schema -->
+		<property name="databaseSchemaUpdate" value="true"/>
+		<!-- Configure the job executor -->
+		<property name="jobExecutorActivate" value="true"/>
+		<!-- Configure the history level -->
+		<property name="history" value="full"/>
+	</bean>
+
+	<!-- Create the ProcessEngine instance -->
+	<bean id="processEngine" class="org.camunda.bpm.engine.ProcessEngineFactoryBean">
+		<property name="processEngineConfiguration" ref="processEngineConfiguration"/>
+	</bean>
+
+	<!-- Expose the RuntimeService as a bean for easy access -->
+	<bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
+
+</beans>
