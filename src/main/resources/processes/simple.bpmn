@@ -17,6 +17,11 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_189n7bx" sourceRef="Activity_02qmzc4" targetRef="Event_1ashgeq" />
     <bpmn:serviceTask id="Activity_02qmzc4" camunda:class="org.example.TaskExample">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="arg1">stringInput</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_1p3gn7s</bpmn:incoming>
       <bpmn:outgoing>Flow_189n7bx</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -30,6 +35,12 @@
   <bpmn:message id="Message_0qdqdm0" name="myMessage2" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_05a2kpn">
+      <bpmndi:BPMNShape id="Event_03gvj5z_di" bpmnElement="Event_17q16hk">
+        <dc:Bounds x="422" y="82" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="410" y="125" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
         <dc:Bounds x="162" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
@@ -41,12 +52,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_0zo432l_di" bpmnElement="Activity_1las535">
         <dc:Bounds x="240" y="60" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_03gvj5z_di" bpmnElement="Event_17q16hk">
-        <dc:Bounds x="422" y="82" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="410" y="125" width="60" height="14" />
-        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1p0hzw1_di" bpmnElement="Flow_1p0hzw1">
         <di:waypoint x="198" y="100" />
