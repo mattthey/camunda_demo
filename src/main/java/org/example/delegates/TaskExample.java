@@ -1,4 +1,4 @@
-package org.example;
+package org.example.delegates;
 
 import java.util.stream.Collectors;
 
