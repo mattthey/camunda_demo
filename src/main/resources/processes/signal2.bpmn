@@ -6,6 +6,14 @@
       <bpmn:signalEventDefinition id="SignalEventDefinition_1uvidpj" signalRef="Signal_1bbfnuv" />
     </bpmn:startEvent>
     <bpmn:serviceTask id="Activity_0lhf1y7" camunda:class="org.example.delegates.TaskExample">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="inp21">
+            <camunda:list />
+          </camunda:inputParameter>
+          <camunda:outputParameter name="out21">"${out21}"</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0qu42sl</bpmn:incoming>
       <bpmn:outgoing>Flow_0k796pd</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -17,6 +25,7 @@
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="Flow_0k796pd" sourceRef="Activity_0lhf1y7" targetRef="Event_1hk4dif" />
     <bpmn:serviceTask id="Activity_070gd9z" camunda:class="org.example.delegates.Signal2Executor">
+      <bpmn:extensionElements />
       <bpmn:incoming>Flow_0xb284s</bpmn:incoming>
       <bpmn:outgoing>Flow_1sw38zt</bpmn:outgoing>
     </bpmn:serviceTask>

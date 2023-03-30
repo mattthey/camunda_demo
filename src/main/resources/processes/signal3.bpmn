@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_054w6hy" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.18.0">
+  <bpmn:process id="Process_1ib4yvg" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0sefdlw</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0sefdlw" sourceRef="StartEvent_1" targetRef="Gateway_1p2r6so" />
+    <bpmn:inclusiveGateway id="Gateway_01i0y04">
+      <bpmn:incoming>Flow_0pc6ok7</bpmn:incoming>
+      <bpmn:incoming>Flow_1lym0bs</bpmn:incoming>
+      <bpmn:outgoing>Flow_0apvmtf</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:parallelGateway id="Gateway_1p2r6so">
+      <bpmn:incoming>Flow_0sefdlw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d756su</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0jcu7kf</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:sequenceFlow id="Flow_1d756su" sourceRef="Gateway_1p2r6so" targetRef="Activity_1io2cht" />
+    <bpmn:sequenceFlow id="Flow_0jcu7kf" sourceRef="Gateway_1p2r6so" targetRef="Activity_0bys7y5" />
+    <bpmn:sequenceFlow id="Flow_1k8bp9u" sourceRef="Activity_0bys7y5" targetRef="Activity_1u3rdp0" />
+    <bpmn:sequenceFlow id="Flow_0pc6ok7" sourceRef="Activity_1u3rdp0" targetRef="Gateway_01i0y04" />
+    <bpmn:sequenceFlow id="Flow_0apvmtf" sourceRef="Gateway_01i0y04" targetRef="Activity_1vt6fzf" />
+    <bpmn:endEvent id="Event_1w9d83o">
+      <bpmn:incoming>Flow_11gf2av</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_11gf2av" sourceRef="Activity_1vt6fzf" targetRef="Event_1w9d83o" />
+    <bpmn:serviceTask id="Activity_0bys7y5" name="Создать переменную out=111" camunda:class="org.example.delegates.CreateVariable">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="value">111</camunda:inputParameter>
+          <camunda:inputParameter name="varName">out</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0jcu7kf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1k8bp9u</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1io2cht" name="Создать переменную out=222" camunda:class="org.example.delegates.CreateVariable">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="value">222</camunda:inputParameter>
+          <camunda:inputParameter name="varName">out</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1d756su</bpmn:incoming>
+      <bpmn:outgoing>Flow_13a43um</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_13a43um" sourceRef="Activity_1io2cht" targetRef="Activity_07pmgcv" />
+    <bpmn:serviceTask id="Activity_1u3rdp0" name="Положить out в out1" camunda:class="org.example.delegates.SetVariable">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="fromVarName">out</camunda:inputParameter>
+          <camunda:inputParameter name="toVarName">out1</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1k8bp9u</bpmn:incoming>
+      <bpmn:outgoing>Flow_0pc6ok7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_07pmgcv" name="Положить out в out2" camunda:class="org.example.delegates.SetVariable">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="fromVarName">out</camunda:inputParameter>
+          <camunda:inputParameter name="toVarName">out2</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_13a43um</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lym0bs</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1lym0bs" sourceRef="Activity_07pmgcv" targetRef="Gateway_01i0y04" />
+    <bpmn:serviceTask id="Activity_1vt6fzf" name="Напечатать все переменны" camunda:class="org.example.delegates.TaskExample">
+      <bpmn:incoming>Flow_0apvmtf</bpmn:incoming>
+      <bpmn:outgoing>Flow_11gf2av</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1ib4yvg">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="152" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0mb1vzi_di" bpmnElement="Gateway_1p2r6so">
+        <dc:Bounds x="305" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_07uvc37_di" bpmnElement="Gateway_01i0y04">
+        <dc:Bounds x="755" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1w9d83o_di" bpmnElement="Event_1w9d83o">
+        <dc:Bounds x="1042" y="202" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1tc1b6k_di" bpmnElement="Activity_0bys7y5">
+        <dc:Bounds x="370" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1dlz5in" bpmnElement="Activity_1io2cht">
+        <dc:Bounds x="370" y="290" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ro87k4_di" bpmnElement="Activity_1u3rdp0">
+        <dc:Bounds x="530" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1q6surp_di" bpmnElement="Activity_1vt6fzf">
+        <dc:Bounds x="860" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1dlb27z" bpmnElement="Activity_07pmgcv">
+        <dc:Bounds x="540" y="290" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0sefdlw_di" bpmnElement="Flow_0sefdlw">
+        <di:waypoint x="188" y="220" />
+        <di:waypoint x="305" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d756su_di" bpmnElement="Flow_1d756su">
+        <di:waypoint x="330" y="245" />
+        <di:waypoint x="330" y="330" />
+        <di:waypoint x="370" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jcu7kf_di" bpmnElement="Flow_0jcu7kf">
+        <di:waypoint x="330" y="195" />
+        <di:waypoint x="330" y="120" />
+        <di:waypoint x="370" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0pc6ok7_di" bpmnElement="Flow_0pc6ok7">
+        <di:waypoint x="630" y="120" />
+        <di:waypoint x="780" y="120" />
+        <di:waypoint x="780" y="195" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0apvmtf_di" bpmnElement="Flow_0apvmtf">
+        <di:waypoint x="805" y="220" />
+        <di:waypoint x="860" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1k8bp9u_di" bpmnElement="Flow_1k8bp9u">
+        <di:waypoint x="470" y="120" />
+        <di:waypoint x="530" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11gf2av_di" bpmnElement="Flow_11gf2av">
+        <di:waypoint x="960" y="220" />
+        <di:waypoint x="1042" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13a43um_di" bpmnElement="Flow_13a43um">
+        <di:waypoint x="470" y="330" />
+        <di:waypoint x="540" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lym0bs_di" bpmnElement="Flow_1lym0bs">
+        <di:waypoint x="640" y="330" />
+        <di:waypoint x="780" y="330" />
+        <di:waypoint x="780" y="245" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -7,6 +7,13 @@
     </bpmn:startEvent>
     <bpmn:sequenceFlow id="Flow_0wfptuu" sourceRef="StartEvent_1" targetRef="Activity_06gfera" />
     <bpmn:serviceTask id="Activity_06gfera" camunda:class="org.example.delegates.TaskExample">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="inp11">
+            <camunda:map />
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_0wfptuu</bpmn:incoming>
       <bpmn:outgoing>Flow_1g7fk0q</bpmn:outgoing>
     </bpmn:serviceTask>

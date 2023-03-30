@@ -32,6 +32,7 @@ public class CorrelationExample {
 
     public void correlateMessage(String messageName, String businessKey) {
         final List<MessageCorrelationResult> messageCorrelationResults = runtimeService.createMessageCorrelation(messageName)
+                .processInstanceId("asd")
                 .processInstanceBusinessKey(businessKey)
                 .correlateAllWithResult();
         System.out.println("Correlated message " + messageName + " with process instance " + "processInstance.getId()" + " and business key " + businessKey);

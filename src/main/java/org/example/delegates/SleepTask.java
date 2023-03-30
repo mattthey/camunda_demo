@@ -1,15 +1,16 @@
 package org.example.delegates;
 
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
-public class Signal2Executor implements JavaDelegate
+public class SleepTask implements JavaDelegate
 {
     @Override
     public void execute(DelegateExecution execution) throws Exception
     {
-        PrintVariables.exec(getClass().getSimpleName(), execution);
+        final String timeCountStr = Objects.requireNonNullElse(execution.getVariable("timeSleep"), "1").toString();
+        Thread.sleep(Long.parseLong(timeCountStr));
     }
 }

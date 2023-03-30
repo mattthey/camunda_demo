@@ -1,9 +1,8 @@
 package org.example;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngineConfiguration;
@@ -13,6 +12,8 @@ import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.repository.Deployment;
 import org.camunda.bpm.engine.repository.DeploymentBuilder;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
+import org.camunda.bpm.engine.runtime.EventSubscription;
+import org.camunda.bpm.engine.runtime.Execution;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 
 public class Main
@@ -21,10 +22,12 @@ public class Main
             "processes/simple.bpmn",
             "processes/simple2.bpmn",
             "processes/signal1.bpmn",
-            "processes/signal2.bpmn"
+            "processes/signal2.bpmn",
+            "processes/signal3.bpmn",
+            "processes/signal4.bpmn"
     );
 
-    public static void main(String[] args)
+    public static void main(String[] args) throws InterruptedException
     {
         // Get the RuntimeService instance from the Camunda BPM engine
         RuntimeService runtimeService = ProcessEngineConfiguration
@@ -33,7 +36,42 @@ public class Main
                 .getRuntimeService();
 
         final List<ProcessDefinition> processDefinitions = deployProcess();
-        signalTest(runtimeService, processDefinitions);
+//        signalTest(runtimeService, processDefinitions);
+        parallelSignalTest(runtimeService, processDefinitions);
+        System.out.println("DONE");
+    }
+
+    private static void parallelSignalTest(
+            RuntimeService runtimeService,
+            List<ProcessDefinition> processDefinitions
+    ) throws InterruptedException
+    {
+        final List<ProcessDefinition> processDefFromSig4 = processDefinitions.stream()
+                .filter(processDefinition -> processDefinition.getResourceName().endsWith("signal4.bpmn"))
+                .toList();
+        if (processDefFromSig4.size() != 1)
+            throw new RuntimeException("Expected size 1");
+        final ProcessDefinition procDef = processDefFromSig4.get(0);
+
+        final SignalExample signalExample = new SignalExample(runtimeService);
+        signalExample.startProcessInstanceByKey(procDef.getKey());
+
+        signalExample.sendSignal("signal4", Map.of("var", "1"));
+        signalExample.sendSignal("signal44", Map.of("var", "2"));
+
+        final List<Execution> executions = runtimeService.createExecutionQuery()
+                .processDefinitionKey(procDef.getKey())
+                .list();
+        for (Execution execution : executions)
+        {
+            final Map<String, Object> variables = runtimeService.getVariables(execution.getId());
+            System.out.printf("Execution with id %s has variables: [%s]%n",
+                    execution.getId(),
+                    variables.entrySet().stream()
+                            .map(entry -> entry.getKey() + ":" + entry.getValue())
+                            .collect(Collectors.joining(", "))
+            );
+        }
     }
 
     private static void signalTest(
@@ -41,12 +79,31 @@ public class Main
             List<ProcessDefinition> processDefinitions
     )
     {
+        final String signal1 = "signal1";
+        final String signal2 = "signal2";
         final SignalExample signalExample = new SignalExample(runtimeService);
         final Map<String, Object> processVariables = Map.of("var1", 1L);
 
-        signalExample.sendSignal("signal2", processVariables);
-        signalExample.sendSignal("signal1", processVariables);
-        signalExample.sendSignal("signal2", processVariables);
+        List<EventSubscription> eventSubscriptions = signalExample.getEventSubscriptions(signal2);
+        if (!eventSubscriptions.isEmpty()) {
+            throw new RuntimeException("По идее нет стартового события, которое начинается с " + signal2);
+        }
+        eventSubscriptions = signalExample.getEventSubscriptions(signal1);
+        if (eventSubscriptions.isEmpty()) {
+            throw new RuntimeException("Должно найтись хотя бы одно (2) событие, которое ждет сигнала " + signal1);
+        }
+        for (EventSubscription eventSubscription : eventSubscriptions)
+        {
+            final String processInstanceId = eventSubscription.getProcessInstanceId();
+            if (processInstanceId == null)
+                continue;
+            final Map<String, Object> variables = runtimeService.getVariables(processInstanceId);
+            System.out.printf("For process id %s need variables: ", processInstanceId);
+        }
+
+        signalExample.sendSignal(signal2, processVariables);
+        signalExample.sendSignal(signal1, processVariables);
+        signalExample.sendSignal(signal2, processVariables);
     }
 
     private static void correlationMessageTest(
