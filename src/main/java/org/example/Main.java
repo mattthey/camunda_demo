@@ -24,7 +24,8 @@ public class Main
             "processes/signal1.bpmn",
             "processes/signal2.bpmn",
             "processes/signal3.bpmn",
-            "processes/signal4.bpmn"
+            "processes/signal4.bpmn",
+            "processes/signal5.bpmn"
     );
 
     public static void main(String[] args) throws InterruptedException
@@ -38,7 +39,41 @@ public class Main
         final List<ProcessDefinition> processDefinitions = deployProcess();
 //        signalTest(runtimeService, processDefinitions);
         parallelSignalTest(runtimeService, processDefinitions);
+//        parallelSignalTest2(runtimeService, processDefinitions);
         System.out.println("DONE");
+    }
+
+    private static void parallelSignalTest2(
+            RuntimeService runtimeService,
+            List<ProcessDefinition> processDefinitions
+    ) throws InterruptedException
+    {
+        final List<ProcessDefinition> processDefFromSig4 = processDefinitions.stream()
+                .filter(processDefinition -> processDefinition.getResourceName().endsWith("signal5.bpmn"))
+                .toList();
+        if (processDefFromSig4.size() != 1)
+            throw new RuntimeException("Expected size 1");
+        final ProcessDefinition procDef = processDefFromSig4.get(0);
+
+        final SignalExample signalExample = new SignalExample(runtimeService);
+        signalExample.startProcessInstanceByKey(procDef.getKey());
+
+        signalExample.sendSignal("sig5", Map.of("sys_id", "1"));
+        signalExample.sendSignal("sig5", Map.of("sys_id", "2"));
+
+        final List<Execution> executions = runtimeService.createExecutionQuery()
+                .processDefinitionKey(procDef.getKey())
+                .list();
+        for (Execution execution : executions)
+        {
+            final Map<String, Object> variables = runtimeService.getVariables(execution.getId());
+            System.out.printf("Execution with id %s has variables: [%s]%n",
+                    execution.getId(),
+                    variables.entrySet().stream()
+                            .map(entry -> entry.getKey() + ":" + entry.getValue())
+                            .collect(Collectors.joining(", "))
+            );
+        }
     }
 
     private static void parallelSignalTest(
@@ -56,8 +91,8 @@ public class Main
         final SignalExample signalExample = new SignalExample(runtimeService);
         signalExample.startProcessInstanceByKey(procDef.getKey());
 
-        signalExample.sendSignal("signal4", Map.of("var", "1"));
-        signalExample.sendSignal("signal44", Map.of("var", "2"));
+        signalExample.sendSignal("signal4", Map.of("var", List.of("1", "2")));
+        signalExample.sendSignal("signal44", Map.of("var", List.of("3", "4")));
 
         final List<Execution> executions = runtimeService.createExecutionQuery()
                 .processDefinitionKey(procDef.getKey())
